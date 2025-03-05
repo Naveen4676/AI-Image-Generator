@@ -13,7 +13,7 @@ async function generateImage() {
     loadingElement.classList.remove("hidden");
 
     try {
-        // ✅ Fix: Use FormData instead of JSON
+        // ✅ Use FormData instead of JSON
         const formData = new FormData();
         formData.append("prompt", prompt);
 
@@ -22,23 +22,17 @@ async function generateImage() {
             body: formData, // ✅ Sending multipart/form-data
         });
 
-        const text = await response.text(); // Read response as text first
-        try {
-            const data = JSON.parse(text); // Try parsing as JSON
-            if (data.image_url) {
-                imageElement.style.opacity = 0;
-                imageElement.src = data.image_url;
-                imageElement.classList.remove("hidden");
+        const data = await response.json();
+        if (data.image_url) {
+            imageElement.style.opacity = 0;
+            imageElement.src = data.image_url;
+            imageElement.classList.remove("hidden");
 
-                setTimeout(() => {
-                    imageElement.style.opacity = 1;
-                }, 100);
-            } else {
-                alert("Failed to generate image. Try again.");
-            }
-        } catch (error) {
-            console.error("Invalid JSON response:", text);
-            alert("Unexpected server response. Check console.");
+            setTimeout(() => {
+                imageElement.style.opacity = 1;
+            }, 100);
+        } else {
+            alert("Failed to generate image. Try again.");
         }
     } catch (error) {
         alert("Error generating image. Please check the backend.");
@@ -48,7 +42,7 @@ async function generateImage() {
     }
 }
 
-// ✅ Add 'Enter' key event listener (Fixed)
+// ✅ Fix 'Enter' key trigger
 document.getElementById("prompt").addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         event.preventDefault(); // Prevents default form submission
