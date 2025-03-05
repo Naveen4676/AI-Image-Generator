@@ -13,10 +13,13 @@ async function generateImage() {
     loadingElement.classList.remove("hidden");
 
     try {
+        // ✅ Fix: Use FormData instead of JSON
+        const formData = new FormData();
+        formData.append("prompt", prompt);
+
         const response = await fetch("https://ai-image-generator-nk60.onrender.com/generate-image", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: prompt })
+            body: formData, // ✅ Sending multipart/form-data
         });
 
         const text = await response.text(); // Read response as text first
@@ -45,10 +48,10 @@ async function generateImage() {
     }
 }
 
-// ✅ Fix 'Enter' key trigger using 'keydown'
+// ✅ Add 'Enter' key event listener (Fixed)
 document.getElementById("prompt").addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
-        event.preventDefault(); // Prevents form submission if inside a form
+        event.preventDefault(); // Prevents default form submission
         generateImage();
     }
 });
