@@ -3,7 +3,7 @@ async function generateImage() {
     const imageElement = document.getElementById("generatedImage");
     const loadingElement = document.getElementById("loading");
 
-    if (!prompt) {
+    if (!prompt.trim()) {
         alert("Please enter an image description.");
         return;
     }
@@ -45,8 +45,8 @@ async function generateImage() {
     }
 }
 
-// ✅ Add 'Enter' key event listener
-document.getElementById("prompt").addEventListener("keypress", function (event) {
+// ✅ Fix 'Enter' key trigger using 'keydown'
+document.getElementById("prompt").addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         event.preventDefault(); // Prevents form submission if inside a form
         generateImage();
