@@ -23,9 +23,9 @@ async function generateImage() {
         });
 
         const data = await response.json();
-        if (data.image_url) {
+        if (data.image) {
             imageElement.style.opacity = 0;
-            imageElement.src = data.image_url;
+            imageElement.src = data.image;
             imageElement.classList.remove("hidden");
 
             setTimeout(() => {
@@ -45,7 +45,7 @@ async function generateImage() {
 // ✅ Fix 'Enter' key trigger
 document.getElementById("prompt").addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
-        event.preventDefault(); // Prevents default form submission
+        event.preventDefault();
         generateImage();
     }
 });
