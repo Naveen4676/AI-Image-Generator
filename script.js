@@ -14,7 +14,7 @@ async function generateImage() {
 
     try {
         // 🔹 Replace with your actual Render backend API URL
-        const response = await fetch("https://ai-image-generator-nk60.onrender.com", {
+        const response = await fetch("https://ai-image-generator-nk60.onrender.com/chat", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
