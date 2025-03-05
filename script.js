@@ -1,5 +1,3 @@
-const socket = io("https://ai-image-generator-nk60.onrender.com");
-
 async function generateImage() {
     const prompt = document.getElementById("prompt").value;
     const imageElement = document.getElementById("generatedImage");
@@ -15,19 +13,18 @@ async function generateImage() {
     loadingElement.classList.remove("hidden");
 
     try {
-        // 🔹 Trigger WebSocket for real-time image generation
-        socket.emit("request-image", prompt);
-
-        socket.on("status", (data) => {
-            if (data.status === "generating") {
-                loadingElement.innerText = "Generating Image...";
-            }
+        const response = await fetch("https://ai-image-generator-nk60.onrender.com/generate-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt: prompt })
         });
 
-        socket.on("image-response", (data) => {
-            if (data.status === "success" && data.image) {
+        const text = await response.text(); // Read response as text first
+        try {
+            const data = JSON.parse(text); // Try parsing as JSON
+            if (data.image_url) {
                 imageElement.style.opacity = 0;
-                imageElement.src = data.image;
+                imageElement.src = data.image_url;
                 imageElement.classList.remove("hidden");
 
                 setTimeout(() => {
@@ -36,11 +33,22 @@ async function generateImage() {
             } else {
                 alert("Failed to generate image. Try again.");
             }
-            loadingElement.classList.add("hidden");
-        });
+        } catch (error) {
+            console.error("Invalid JSON response:", text);
+            alert("Unexpected server response. Check console.");
+        }
     } catch (error) {
         alert("Error generating image. Please check the backend.");
         console.error(error);
+    } finally {
         loadingElement.classList.add("hidden");
     }
 }
+
+// ✅ Add 'Enter' key event listener
+document.getElementById("prompt").addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+        event.preventDefault(); // Prevents form submission if inside a form
+        generateImage();
+    }
+});
